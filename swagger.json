@@ -1,0 +1,188 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "LLM Development Suggestions API",
+        "description": "API para analisar conversas entre usuários e modelos de linguagem grande (LLM) e fornecer sugestões de desenvolvimento."
+    },
+    "host": "localhost:8000",
+    "basePath": "/",
+    "schemes": [
+        "http"
+    ],
+    "paths": {
+        "/": {
+            "get": {
+                "summary": "Root",
+                "description": "Retorna uma mensagem de boas-vindas",
+                "responses": {
+                    "200": {
+                        "description": "Mensagem de boas-vindas",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/hello": {
+            "get": {
+                "summary": "Hello",
+                "description": "Retorna uma mensagem de saudação",
+                "responses": {
+                    "200": {
+                        "description": "Mensagem de saudação",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/analyze": {
+            "post": {
+                "summary": "Analyze Conversation",
+                "description": "Recebe uma conversa e retorna sugestões de melhoria",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "conversation": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "role": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "user",
+                                                    "assistant"
+                                                ]
+                                            },
+                                            "content": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "role",
+                                            "content"
+                                        ]
+                                    }
+                                }
+                            },
+                            "required": [
+                                "conversation"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sugestões de melhoria",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "suggestions": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Entrada inválida",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "ConversationItem": {
+            "type": "object",
+            "properties": {
+                "role": {
+                    "type": "string",
+                    "enum": [
+                        "user",
+                        "assistant"
+                    ]
+                },
+                "content": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "role",
+                "content"
+            ]
+        },
+        "Conversation": {
+            "type": "object",
+            "properties": {
+                "conversation": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ConversationItem"
+                    }
+                }
+            },
+            "required": [
+                "conversation"
+            ]
+        },
+        "SuggestionResponse": {
+            "type": "object",
+            "properties": {
+                "suggestions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

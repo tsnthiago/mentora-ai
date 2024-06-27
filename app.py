@@ -1,11 +1,29 @@
-from flask import Flask, request, jsonify, make_response
-import openai
 import os
+import json
+import openai
+
+from flask import Flask, request, jsonify, make_response
+from flask_swagger_ui import get_swaggerui_blueprint
 
 app = Flask(__name__)
 
 # Set your OpenAI API key
 openai.api_key = os.getenv("OPENAI_API_KEY")
+
+# Swagger UI setup
+SWAGGER_URL = '/swagger'
+API_URL = '/static/swagger.json'  # Path to your swagger.json file
+swaggerui_blueprint = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={
+        'app_name': "LLM Development Suggestions API"
+    }
+)
+
+# Load Swagger spec from file
+with open('swagger.json') as f:
+    swagger_spec = json.load(f)
 
 @app.route("/")
 def hello_from_root():
@@ -37,25 +55,37 @@ def analyze():
             "[\"Sugestão 1\", \"Sugestão 2\", \"Sugestão 3\"]"
         )
     }
-    messages.insert(0, detailed_prompt)
+    messages = [detailed_prompt] + [{"role": item["role"], "content": item["content"]} for item in conversation] 
 
     try:
-        # Make OpenAI API call
         response = openai.chat.completions.create(
             model="gpt-3.5-turbo",
-            messages=messages,
-            max_tokens=300
+            messages=messages
         )
-        # Extract suggestions (for example purposes, taking the first response)
         suggestions = response.choices[0].message.content
+    except openai.APIError as e:
+        return make_response(jsonify(error=f"OpenAI API error: {str(e)}"), 500)
+    except openai.APIConnectionError as e:
+        return make_response(jsonify(error=f"Failed to connect to OpenAI API: {str(e)}"), 500)
+    except openai.RateLimitError as e:
+        return make_response(jsonify(error=f"OpenAI API request exceeded rate limit: {str(e)}"), 500)
     except Exception as e:
-        return make_response(jsonify(error=str(e)), 500)
+        return make_response(jsonify(error=f"Unexpected error: {str(e)}"), 500)
 
     return jsonify(suggestions=suggestions)
+
+@app.route("/swagger.json")
+def swagger_json():
+    return jsonify(swagger_spec)
 
 @app.errorhandler(404)
 def resource_not_found(e):
     return make_response(jsonify(error='Not found!'), 404)
+
+app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+
+if __name__ == "__main__":
+    app.run(debug=True)
 
 if __name__ == "__main__":
     app.run(debug=True)
