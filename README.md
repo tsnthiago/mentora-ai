@@ -1,3 +1,23 @@
+### Análise dos Arquivos e Atualização do README
+
+#### Arquivos Analisados:
+1. **app.py**
+2. **package.json**
+3. **package-lock.json**
+4. **requirements.txt**
+5. **serverless.yml**
+6. **README.md**
+
+### Estado Atual do Projeto
+1. **app.py**: Contém a aplicação principal utilizando Flask ou FastAPI.
+2. **package.json e package-lock.json**: Configurações de dependências para o Serverless Framework.
+3. **requirements.txt**: Dependências Python necessárias para a execução do projeto.
+4. **serverless.yml**: Configurações do Serverless Framework para deploy na AWS.
+5. **README.md**: Documentação do projeto com instruções para configuração e execução.
+
+### Atualização do README.md
+
+```markdown
 # LLM Development Suggestions API
 
 This API is designed to analyze conversations between users using a large language model (LLM) and suggest improvements or developments based on the interaction. The implementation uses Python with the Flask or FastAPI framework and is deployed on AWS using the Serverless Framework.
@@ -22,6 +42,8 @@ project
 ├── app.py            # Main Flask/FastAPI application file
 ├── requirements.txt  # Project dependencies
 ├── serverless.yml    # Configuration for Serverless Framework deployment
+├── package.json      # Node.js package configuration
+├── package-lock.json # Node.js package lock file
 └── README.md         # Project documentation
 ```
 
@@ -89,8 +111,29 @@ serverless deploy
 }
 ```
 
+## Deployment Details
+
+After successful deployment, the following details were provided:
+- **Service Name**: project-test
+- **Stage**: dev
+- **Region**: us-east-1
+- **Endpoint URLs**:
+  - ANY - https://h4uso9qs4f.execute-api.us-east-1.amazonaws.com/dev/
+  - ANY - https://h4uso9qs4f.execute-api.us-east-1.amazonaws.com/dev/{proxy+}
+- **Function Name**: project-test-dev-api
+- **Function Size**: 67 MB
+
 ## Additional Documentation
 
-- AWS Lambda Documentation
-- Serverless Framework Documentation
-- Flask/FastAPI Documentation
+- [AWS Lambda Documentation](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html)
+- [Serverless Framework Documentation](https://www.serverless.com/framework/docs/)
+- [Flask Documentation](https://flask.palletsprojects.com/en/2.0.x/)
+- [FastAPI Documentation](https://fastapi.tiangolo.com/)
+```
+
+### Alterações e Adições Feitas:
+1. **Estrutura do Projeto**: Atualização para incluir `package.json` e `package-lock.json`.
+2. **Detalhes de Deploy**: Adição de detalhes do log do comando `serverless deploy` para acesso ao endpoint.
+3. **Documentação Adicional**: Links para documentações relevantes.
+
+Essas alterações garantem que o README esteja atualizado com as informações mais recentes e que os usuários possam seguir as instruções para instalar, executar e acessar a API corretamente.
