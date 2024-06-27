@@ -25,11 +25,26 @@ def analyze():
     conversation = data["conversation"]
     messages = [{"role": item["role"], "content": item["content"]} for item in conversation]
 
+    # Add detailed prompt for LLM
+    detailed_prompt = {
+        "role": "system",
+        "content": (
+            "Você é um assistente de IA especializado em fornecer sugestões para melhorar conversas entre usuários "
+            "e grandes modelos de linguagem. Com base na conversa a seguir, forneça sugestões acionáveis para que o usuário "
+            "melhore sua interação. As sugestões devem ser práticas e voltadas para aprimorar a qualidade e a eficácia da conversa. "
+            "Cada sugestão deve conter no mínimo 100 palavras. "
+            "A resposta deve ser retornada no formato JSON: "
+            "[\"Sugestão 1\", \"Sugestão 2\", \"Sugestão 3\"]"
+        )
+    }
+    messages.insert(0, detailed_prompt)
+
     try:
         # Make OpenAI API call
         response = openai.chat.completions.create(
             model="gpt-3.5-turbo",
-            messages=messages
+            messages=messages,
+            max_tokens=300
         )
         # Extract suggestions (for example purposes, taking the first response)
         suggestions = response.choices[0].message.content
