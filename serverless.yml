@@ -8,10 +8,24 @@ service: project-test
 custom:
   wsgi:
     app: app.app
+  pythonRequirements:
+    dockerizePip: true
+
+package:
+  exclude:
+    - node_modules/**
+    - venv/**
+    - .venv/**
+    - tests/**
+    - .git/**
+    - .github/**
+    - .gitignore
 
 provider:
   name: aws
   runtime: python3.12
+  environment:
+    OPENAI_API_KEY: ${env:OPENAI_API_KEY}
 
 functions:
   api:
